@@ -18,7 +18,9 @@ namespace Cfg
 	//static const char * hostname = "localhost";
 	static const PortType port = 9876;
 	static const size_t session_buf_size = 4096;
-	static const char * msg_delim = "\r\n";
+	static const char * req_delim = "\r\n";
+	static bool req_trim_trailing_whitespaces = true;
+	static bool req_filter_out_non_printable_chars = true;
 };
 
 class Session
@@ -61,7 +63,7 @@ private:
 		boost::asio::async_read_until(
 			_socket,
 			_in_buf,
-			std::string(Cfg::msg_delim),
+			std::string(Cfg::req_delim),
 			[this, self]
 				// N.B.: Must copying "self" by value to increase ref count
 				// so that the calling object doesn't die before callback.
@@ -69,27 +71,34 @@ private:
 			{
 				// Async read callback function
 
-				if (!ec)
+				if (ec)
 				{
-					std::cout << "Transferred: " << bytes_transferred << " Bytes\n";
+					std::cout << "Read error: " << ec << std::endl;
+					return;
+				}
 
-					// Read buffer into temporary string
-					//_in_buf.commit(bytes_transferred);
-					std::istream is(&_in_buf);
-					std::string in_msg;
-					std::getline(is, in_msg);
+				std::cout << "Transferred: " << bytes_transferred << " Bytes\n";
 
-					// Test raw message
-					/*
-					std::cout << "Read Raw: " << in_msg << std::endl;
-					for (int c : in_msg)
-					{
-						std::cout << c << " ";
-					}
-					std::cout << std::endl;
-					*/
+				// Read buffer into temporary string
+				//_in_buf.commit(bytes_transferred);
+				std::istream is(&_in_buf);
+				std::string in_msg;
+				std::getline(is, in_msg);
 
-					// Trim trailing whitespace
+				// Test raw message
+				/*
+				std::cout << "Read Raw: " << in_msg << std::endl;
+				for (int c : in_msg)
+				{
+					std::cout << c << " ";
+				}
+				std::cout << std::endl;
+				*/
+
+				// Trim trailing whitespace
+
+				if (Cfg::req_trim_trailing_whitespaces)
+				{
 					while (!in_msg.empty())
 					{
 						char trailing_char = in_msg.back();
@@ -102,7 +111,12 @@ private:
 							break;
 						}
 					}
-					// Delete all non-printables
+				}
+
+				// Delete all non-printables
+
+				if (Cfg::req_filter_out_non_printable_chars)
+				{
 					in_msg.erase(
 						std::remove_if(
 							in_msg.begin(),
@@ -114,25 +128,25 @@ private:
 							),
 						in_msg.end()
 					);
-
-					// If message still isn't empty, add it to the queue
-					if (!in_msg.empty())
-					{
-
-						std::cout << "Read: " << in_msg << std::endl;
-						for (int c : in_msg)
-						{
-							std::cout << c << " ";
-						}
-						std::cout << std::endl;
-
-						_in_queue.push_back(std::move(in_msg));
-
-						std::cout << "Updated queue Size: " << _in_queue.size() << std::endl;
-					}
-
-					read();
 				}
+
+				// If message still isn't empty, add it to the queue
+				if (!in_msg.empty())
+				{
+
+					std::cout << "Read Req: " << in_msg << std::endl;
+					for (int c : in_msg)
+					{
+						std::cout << c << " ";
+					}
+					std::cout << std::endl;
+
+					_in_queue.push_back(std::move(in_msg));
+
+					std::cout << "Updated queue Size: " << _in_queue.size() << std::endl;
+				}
+
+				read();
 			});
 	}
 /*
