@@ -31,7 +31,7 @@ public:
 	void start()
 	{
 		std::cout << "Session started!\n";
-		do_read();
+		read();
 	}
 
 	tcp::socket & get_socket()
@@ -40,22 +40,22 @@ public:
 	}
 
 private:
-	void do_read()
+	void read()
 	{
 		auto self(shared_from_this());
 		_socket.async_read_some(
 			boost::asio::buffer(_data, max_length),
-			[this, self](boost::system::error_code ec, std::size_t length)
+			[this, self](boost::system::error_code ec, std::size_t)
 			{
 				std::cout << "Read: " << _data << std::endl;
 				if (!ec)
 				{
-					do_write(length);
+					read();
 				}
 			});
 	}
 
-	void do_write(std::size_t length)
+	void write(std::size_t length)
 	{
 		std::cout << "Sending: " << _data << std::endl;
 		auto self(shared_from_this());
@@ -66,7 +66,7 @@ private:
 			{
 				if (!ec)
 				{
-					do_read();
+					//read();
 				}
 			});
 	}
@@ -88,12 +88,10 @@ public:
 		_io_service(io_service),
 		_port(port)
 	{
-		std::cout << "Starting server...\n";
-		do_accept();
+
 	}
 
-private:
-	void do_accept()
+	void run()
 	{
 		std::cout << "Listing on port...\n";
 		std::shared_ptr<Session> session( new Session(_io_service) );
@@ -108,9 +106,11 @@ private:
 						session->start();
 					}
 
-					do_accept();
+					run();
 				});
 	}
+
+private:
 
 	tcp::acceptor _acceptor;
 	//tcp::socket _socket;
@@ -133,6 +133,8 @@ int main(int argc, char * argv[])
 		boost::asio::io_service io_service;
 
 		Server s(io_service, Cfg::port);
+		s.run();
+
 
 		io_service.run();
 	}
