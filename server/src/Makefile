@@ -1,6 +1,7 @@
 CC=g++
 CPPFLAGS=-c -Wall -Wextra -O3 -flto -std=c++14
 DEPFLAGS=-M
+LDFLAGS=-lboost_system -lpthread
 
 BUILDDIR=../build
 DEPDIR=$(BUILDDIR)/dep
@@ -17,7 +18,7 @@ $(shell mkdir -p $(OBJDIR) > /dev/null)
 $(shell mkdir -p $(EXEDIR) > /dev/null)
 
 all: $(patsubst %, $(OBJDIR)/%, $(OBJS))
-	$(CC) $^ -o $(EXEDIR)/$(EXEC)
+	$(CC) $^ -o $(EXEDIR)/$(EXEC) $(LDFLAGS)
 
 $(DEPDIR)/%.d: %.cc
 	@set -e; rm -f $@; \
