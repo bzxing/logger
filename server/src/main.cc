@@ -57,6 +57,7 @@ private:
 
 	void do_write(std::size_t length)
 	{
+		std::cout << "Sending: " << _data << std::endl;
 		auto self(shared_from_this());
 		boost::asio::async_write(
 			_socket,
