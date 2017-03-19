@@ -8,6 +8,8 @@
 
 #include <boost/asio.hpp>
 
+#include "reqs.hh"
+
 using boost::asio::ip::tcp;
 
 typedef unsigned short PortType;
@@ -21,6 +23,7 @@ namespace Cfg
 	static const char * req_delim = "\r\n";
 	static bool req_trim_trailing_whitespaces = true;
 	static bool req_filter_out_non_printable_chars = true;
+	static bool req_debug = true;
 };
 
 class Session
@@ -141,9 +144,26 @@ private:
 					}
 					std::cout << std::endl;
 
-					_in_queue.push_back(std::move(in_msg));
+					// _in_queue.push_back(std::move(in_msg));
 
-					std::cout << "Updated queue Size: " << _in_queue.size() << std::endl;
+					ReqCommon::ResultCode result_code;
+					auto req_uptr = Reqs::parse_req_str(in_msg, result_code);
+
+					if (Cfg::req_debug)
+					{
+						std::cout << "New Req (" << ReqCommon::get_short_result_str(result_code) << "): ";
+						if (req_uptr)
+							std::cout << *req_uptr << std::endl;
+						else
+							std::cout << "nullptr" << std::endl;
+					}
+
+					if (req_uptr != nullptr)
+					{
+						req_uptr->serve();
+					}
+
+					// std::cout << "Updated queue Size: " << _in_queue.size() << std::endl;
 				}
 
 				read();
@@ -169,7 +189,6 @@ private:
 	tcp::socket _socket;
 
 	boost::asio::streambuf	_in_buf;
-	InQueue _in_queue;
 
 	//static const size_t max_length = 1024;
 	//char _data[max_length];
