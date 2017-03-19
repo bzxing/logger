@@ -9,16 +9,27 @@ OBJDIR=$(BUILDDIR)/obj
 EXEDIR=$(BUILDDIR)
 
 EXEC=server
+LIB=server.a
 SOURCES=$(wildcard *.cc)
 DEPS=$(SOURCES:.cc=.d)
 OBJS=$(SOURCES:.cc=.o)
+DEPSFP=$(patsubst %, $(DEPDIR)/%, $(DEPS))
+OBJSFP=$(patsubst %, $(OBJDIR)/%, $(OBJS))
+
+MAIN_OBJ=$(OBJDIR)/main.o
+OBJSFP_NOMAIN=$(filter-out $(MAIN_OBJ), $(OBJSFP))
 
 $(shell mkdir -p $(DEPDIR) > /dev/null)
 $(shell mkdir -p $(OBJDIR) > /dev/null)
 $(shell mkdir -p $(EXEDIR) > /dev/null)
 
-all: $(patsubst %, $(OBJDIR)/%, $(OBJS))
+
+
+$(EXEDIR)/$(EXEC): $(OBJSFP)
 	$(CC) $^ -o $(EXEDIR)/$(EXEC) $(LDFLAGS)
+
+$(EXEDIR)/$(LIB): $(OBJSFP_NOMAIN)
+	gcc-ar rcs $(EXEDIR)/$(LIB) $^
 
 $(DEPDIR)/%.d: %.cc
 	@set -e; rm -f $@; \
@@ -27,10 +38,13 @@ $(DEPDIR)/%.d: %.cc
 	rm -f $@.$$$$
 .PRECIOUS: $(DEPDIR)/%.d
 
--include $(patsubst %, $(DEPDIR)/%, $(DEPS))
+-include $(DEPSFP)
 $(OBJDIR)/%.o: %.cc $(DEPDIR)/%.d
 	$(CC) $(CPPFLAGS) $< -o $@
 .PRECIOUS: $(OBJDIR)/%.o
+
+.PHONY: lib
+lib: $(EXEDIR)/$(LIB)
 
 clean:
 	rm -rf ./$(DEPDIR)/*.d \

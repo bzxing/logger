@@ -6,7 +6,7 @@ TSTDIR=tests
 
 
 
-all: target_bin target_tests
+all: target_tests target_bin
 
 
 
