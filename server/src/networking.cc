@@ -229,7 +229,7 @@ public:
 		_io_service(io_service),
 		_port(port)
 	{
-		GlobalMsgQueue::init();
+
 	}
 
 	void run()
@@ -263,6 +263,8 @@ private:
 
 void start_server()
 {
+	GlobalMsgQueue::init();
+
 	boost::asio::io_service io_service;
 
 	Server s(io_service, Cfg::port);
