@@ -21,6 +21,6 @@ while True:
 			data = s.recv(1024)
 			print data;
 		except socket.timeout:
-			print "Done!"
+			print "No more to read!"
 
 
