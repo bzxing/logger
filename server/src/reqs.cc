@@ -1,4 +1,7 @@
 #include "reqs.hh"
+#include "msgs.hh"
+
+#include <regex>
 
 namespace Cfg
 {

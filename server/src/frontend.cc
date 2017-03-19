@@ -9,11 +9,15 @@
 #include <boost/asio.hpp>
 
 #include "reqs.hh"
+#include "msgs.hh"
 
 using boost::asio::ip::tcp;
 
-typedef unsigned short PortType;
-
+// Local Scope Definitions //////////////////////////////////////////
+namespace
+{
+	typedef uint16_t PortType;
+};
 
 namespace Cfg
 {
@@ -25,7 +29,6 @@ namespace Cfg
 
 	// Debug flags
 	static const bool req_debug = true;
-	static const bool cli_arg_debug = false;
 	static const bool session_obj_debug = true;
 	static const bool session_obj_debug_verbose = false;
 	static const bool comm_debug = true;
@@ -211,9 +214,13 @@ private:
 
 };
 
+
 class Server
 {
 public:
+
+
+
 	Server(
 		boost::asio::io_service& io_service,
 		PortType port)
@@ -222,7 +229,7 @@ public:
 		_io_service(io_service),
 		_port(port)
 	{
-
+		GlobalMsgQueue::init();
 	}
 
 	void run()
@@ -254,34 +261,14 @@ private:
 };
 
 
-int main(int argc, char * argv[])
+void start_server()
 {
-	std::cout << argc << std::endl;
+	boost::asio::io_service io_service;
 
-	if (Cfg::cli_arg_debug)
-	{
-		for (int i = 0; i < argc; ++i)
-		{
-			std::cout << argv[i] << std::endl;
-		}
-	}
+	Server s(io_service, Cfg::port);
+	s.run();
 
-	GlobalMsgQueue::init();
-
-	try
-	{
-		boost::asio::io_service io_service;
-
-		Server s(io_service, Cfg::port);
-		s.run();
-
-
-		io_service.run();
-	}
-	catch (std::exception & e)
-	{
-		std::cerr << "Exception: " << e.what() << std::endl;
-	}
-
-	return 0;
+	io_service.run();
 }
+
+

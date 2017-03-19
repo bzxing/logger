@@ -4,13 +4,12 @@
 
 #include <string>
 #include <iostream>
-#include <regex>
 #include <memory>
-
-#include "msgs.hh"
-
+#include <vector>
 
 
+class MsgQueueWrapper;
+class GlobalMsgQueue;
 
 namespace ReqUtils
 {

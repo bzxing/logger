@@ -9,6 +9,10 @@
 #include <mutex>
 #include <iostream>
 
+namespace Cfg
+{
+	static const bool msg_q_debug = true;
+};
 
 class Msg
 {
@@ -39,8 +43,6 @@ public:
 	static Priority get_priority_from_str(const std::string & priority_str)
 	{
 		Priority pri = Priority::Illegal;
-
-
 
 		for (unsigned i = 0; i < _priority_strings.size(); ++i)
 		{
@@ -137,6 +139,10 @@ class GlobalMsgQueue
 public:
 	static void init()
 	{
+		if (Cfg::msg_q_debug)
+		{
+			std::cout << "Initialized GlobalMsgQueue!\n";
+		}
 		_inst = std::unique_ptr<MsgQueueWrapper>(new MsgQueueWrapper);
 	}
 
