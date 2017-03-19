@@ -48,6 +48,7 @@ $(OBJDIR)/%.o: %.cc $(DEPDIR)/%.d
 .PRECIOUS: $(OBJDIR)/%.o
 
 
+.PHONY: clean
 clean:
 	rm -rf ./$(DEPDIR)/*.d \
 	rm -rf ./$(OBJDIR)/*.o \

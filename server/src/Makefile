@@ -43,9 +43,19 @@ $(OBJDIR)/%.o: %.cc $(DEPDIR)/%.d
 	$(CC) $(CPPFLAGS) $< -o $@
 .PRECIOUS: $(OBJDIR)/%.o
 
+.PHONY: exe
+exe: $(EXEDIR)/$(EXEC)
+
 .PHONY: lib
 lib: $(EXEDIR)/$(LIB)
 
+.PHONY: obj
+obj: $(OBJSFP)
+
+.PHONY: dep
+dep: $(DEPSFP)
+
+.PHONY: clean
 clean:
 	rm -rf ./$(DEPDIR)/*.d \
 	rm -rf ./$(OBJDIR)/*.o \

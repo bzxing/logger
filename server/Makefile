@@ -5,17 +5,22 @@ SRCDIR=src
 TSTDIR=tests
 
 
+.PHONY: all
+all: bin tests
 
-all: target_tests target_bin
-
-
-
-target_bin:
+.PHONY: bin
+bin: bin_obj
 	$(MAKE) -C $(SRCDIR)
 
-target_tests: target_bin
+.PHONY: tests
+tests: bin_obj
 	$(MAKE) -C $(TSTDIR)
 
+.PHONY: bin_obj
+bin_obj:
+	$(MAKE) -C $(SRCDIR) obj
+
+.PHONY: clean
 clean:
 	$(MAKE) -C $(SRCDIR) clean
 	$(MAKE) -C $(TSTDIR) clean
