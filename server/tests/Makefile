@@ -28,7 +28,7 @@ $(shell mkdir -p $(DEPDIR) > /dev/null)
 $(shell mkdir -p $(OBJDIR) > /dev/null)
 $(shell mkdir -p $(EXEDIR) > /dev/null)
 
-
+.PHONY: $(BIN_LIB)
 $(EXEDIR)/$(EXEC): $(OBJSFP) $(BIN_LIB)
 	$(CC) $^ -o $(EXEDIR)/$(EXEC) $(LDFLAGS)
 
