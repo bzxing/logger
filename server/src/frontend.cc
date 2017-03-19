@@ -21,9 +21,16 @@ namespace Cfg
 	static const PortType port = 9876;
 	static const size_t session_buf_size = 4096;
 	static const char * req_delim = "\r\n";
-	static bool req_trim_trailing_whitespaces = true;
-	static bool req_filter_out_non_printable_chars = true;
-	static bool req_debug = true;
+	static const bool req_trim_trailing_whitespaces = true;
+	static const bool req_filter_out_non_printable_chars = true;
+	static const bool req_debug = true;
+	static const bool cli_arg_debug = false;
+	static const bool session_obj_debug = true;
+	static const bool session_obj_debug_verbose = false;
+	static const bool comm_debug = true;
+	static const bool comm_debug_ultra_verbose = false;
+	static const bool comm_write_debug_ultra_verbose = false;
+
 };
 
 class Session
@@ -39,17 +46,17 @@ public:
 	:	_socket(io_service),
 		_in_buf(Cfg::session_buf_size)
 	{
-		std::cout << "Session constructed!\n";
+		if (Cfg::session_obj_debug_verbose)	std::cout << "Session constructed!\n";
 	}
 
 	~Session()
 	{
-		std::cout << "Session destroyed!\n";
+		if (Cfg::session_obj_debug)	std::cout << "Session destroyed!\n";
 	}
 
 	void start()
 	{
-		std::cout << "Session started!\n";
+		if (Cfg::session_obj_debug_verbose)	std::cout << "Session started!\n";
 		read();
 	}
 
@@ -76,11 +83,13 @@ private:
 
 				if (ec)
 				{
-					std::cout << "Read error: " << ec << std::endl;
+					if (Cfg::comm_debug)
+						std::cout << "Read error: " << ec << std::endl;
 					return;
 				}
 
-				std::cout << "Transferred: " << bytes_transferred << " Bytes\n";
+				if (Cfg::comm_debug)
+					std::cout << "Bytes read: " << bytes_transferred << " Bytes\n";
 
 				// Read buffer into temporary string
 				//_in_buf.commit(bytes_transferred);
@@ -137,12 +146,17 @@ private:
 				if (!in_msg.empty())
 				{
 
-					std::cout << "Read Req: " << in_msg << std::endl;
-					for (int c : in_msg)
+					if (Cfg::comm_debug)
+						std::cout << "Read Req: " << in_msg << std::endl;
+
+					if (Cfg::comm_debug_ultra_verbose)
 					{
-						std::cout << c << " ";
+						for (int c : in_msg)
+						{
+							std::cout << c << " ";
+						}
+						std::cout << std::endl;
 					}
-					std::cout << std::endl;
 
 					// _in_queue.push_back(std::move(in_msg));
 
@@ -158,37 +172,42 @@ private:
 							std::cout << "nullptr" << std::endl;
 					}
 
+					std::ostringstream returned_contents;
+					returned_contents << ReqCommon::get_short_result_str(result_code) << std::endl;
 					if (req_uptr != nullptr)
 					{
-						req_uptr->serve();
+						req_uptr->serve(GlobalMsgQueue::get_inst(), returned_contents);
 					}
 
-					// std::cout << "Updated queue Size: " << _in_queue.size() << std::endl;
+					// TODO: send returned contents and status message back
+					write(returned_contents.str());
+					read();
 				}
 
 				read();
 			});
 	}
-/*
-	void write(std::size_t length)
+
+	void write(const std::string & str)
 	{
-		std::cout << "Sending: " << _data << std::endl;
+		if (Cfg::comm_write_debug_ultra_verbose)
+			std::cout << "Sending: " << str << std::endl;
 		auto self(shared_from_this());
 		boost::asio::async_write(
 			_socket,
-			boost::asio::buffer(_data, length),
+			boost::asio::buffer(str),
 			[this, self](boost::system::error_code ec, std::size_t)
 			{
 				if (!ec)
 				{
-					//read();
+
 				}
 			});
 	}
-*/
+
 	tcp::socket _socket;
 
-	boost::asio::streambuf	_in_buf;
+	boost::asio::streambuf _in_buf;
 
 	//static const size_t max_length = 1024;
 	//char _data[max_length];
@@ -210,14 +229,16 @@ public:
 
 	void run()
 	{
-		std::cout << "Listing on port...\n";
+		if (Cfg::comm_debug)
+			std::cout << "Listing on port...\n";
 		std::shared_ptr<Session> session( new Session(_io_service) );
 
 		_acceptor.async_accept(
 			session->get_socket(),
 			[this, session](boost::system::error_code ec)
 				{
-					std::cout << "accept ec: " << ec << std::endl;
+					if (Cfg::comm_debug)
+						std::cout << "accept ec: " << ec << std::endl;
 					if (!ec)
 					{
 						session->start();
@@ -240,10 +261,15 @@ int main(int argc, char * argv[])
 {
 	std::cout << argc << std::endl;
 
-	for (int i = 0; i < argc; ++i)
+	if (Cfg::cli_arg_debug)
 	{
-		std::cout << argv[i] << std::endl;
+		for (int i = 0; i < argc; ++i)
+		{
+			std::cout << argv[i] << std::endl;
+		}
 	}
+
+	GlobalMsgQueue::init();
 
 	try
 	{

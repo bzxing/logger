@@ -12,8 +12,8 @@
 
 namespace Cfg
 {
-	static bool regex_debug = true;
-	static bool req_obj_debug = true;
+	static bool regex_debug = false;
+	static bool req_obj_debug = false;
 	static bool req_obj_debug_verbose = false;
 };
 
@@ -27,7 +27,7 @@ public:
 		NewLog,
 		DumpAll,
 		DeleteAll,
-		Unknown
+		Illegal
 	};
 
 
@@ -81,9 +81,9 @@ public:
 				"debug/info/warning/critical/error",
 
 
-			"Unknown request type. Available request types are: new_log, dump_all, delete_all",
+			"Illegal request type. Available request types are: new_log, dump_all, delete_all",
 
-			"Unknown error. Sorry, poor user."
+			"Illegal error. Sorry, poor user."
 		};
 
 		return available_strings[ static_cast<size_t>(result_code) ];
@@ -119,7 +119,7 @@ public:
 
 	virtual ~ReqBase() = default;
 
-	virtual void serve() = 0;
+	virtual void serve(MsgQueueWrapper &, std::ostream &) = 0;
 
 	friend std::ostream & operator<<(std::ostream & os, const ReqBase & req)
 	{
@@ -159,12 +159,17 @@ public:
 		}
 	}
 
-	virtual void serve() override
+	virtual void serve(MsgQueueWrapper & q_wrapper, std::ostream &) override
 	{
 		if (Cfg::req_obj_debug)
 		{
 			std::cout << "ReqNewLog::serve()\n";
 		}
+
+		auto lock = q_wrapper.get_lock();
+
+		auto & q = q_wrapper.get_queue();
+		q.push_back(std::move(_msg));
 	}
 
 	static std::unique_ptr<ReqNewLog> make_req(const std::string & args, ReqCommon::ResultCode & result_code)
@@ -200,7 +205,7 @@ public:
 
 		const Msg::Priority pri = Msg::get_priority_from_str(pri_str);
 
-		if (pri == Msg::Priority::Unknown)
+		if (pri == Msg::Priority::Illegal)
 		{
 			result_code = ReqCommon::ResultCode::NewLogWrongPriority;
 			return nullptr;
@@ -234,7 +239,7 @@ private:
 		}
 	}
 
-	const Msg _msg;
+	Msg _msg; // Non const cuz it's designed to be moved away after serve
 
 };
 
@@ -257,12 +262,17 @@ public:
 		os << "[" << req_type_str() << "] [" << Msg::get_priority_str(_pri) << "]";
 	}
 
-	virtual void serve() override
+	virtual void serve(MsgQueueWrapper & q_wrapper, std::ostream & os) override
 	{
 		if (Cfg::req_obj_debug)
 		{
 			std::cout << "ReqDumpAll::serve()\n";
 		}
+
+		auto lock = q_wrapper.get_lock();
+
+		q_wrapper.dump_to_stream(os, _pri);
+
 	}
 
 	virtual ~ReqDumpAll() override
@@ -303,7 +313,7 @@ public:
 
 		const Msg::Priority pri = Msg::get_priority_from_str(pri_str);
 
-		if (pri == Msg::Priority::Unknown)
+		if (pri == Msg::Priority::Illegal)
 		{
 			result_code = ReqCommon::ResultCode::DumpAllWrongPriority;
 			return nullptr;
@@ -355,12 +365,17 @@ public:
 		os << "[" << req_type_str() << "]";
 	}
 
-	virtual void serve() override
+	virtual void serve(MsgQueueWrapper & q_wrapper, std::ostream &) override
 	{
 		if (Cfg::req_obj_debug)
 		{
 			std::cout << "ReqDeleteAll::serve()\n";
 		}
+
+		auto lock = q_wrapper.get_lock();
+
+		auto & q = q_wrapper.get_queue();
+		q.clear();
 	}
 
 	virtual ~ReqDeleteAll() override
@@ -377,7 +392,7 @@ public:
 		// delete_all
 		//
 
-		auto new_uptr = std::unique_ptr<ReqDeleteAll>(new ReqDeleteAll());
+		auto new_uptr = std::unique_ptr<ReqDeleteAll>(new ReqDeleteAll);
 
 		result_code = ReqCommon::ResultCode::Ok;
 
@@ -477,7 +492,7 @@ public:
 				req_obj_ptr = ReqBaseUnqPtr(ReqDeleteAll::make_req(result_code));
 				break;
 
-			case ReqCommon::ReqType::Unknown:
+			case ReqCommon::ReqType::Illegal:
 			default:
 				req_obj_ptr = nullptr;
 				result_code = ReqCommon::ResultCode::UnknownReqType;
@@ -492,7 +507,7 @@ private:
 
 	static ReqCommon::ReqType get_req_type(const std::string & req_type_str)
 	{
-		ReqCommon::ReqType type = ReqCommon::ReqType::Unknown;
+		ReqCommon::ReqType type = ReqCommon::ReqType::Illegal;
 
 		static const std::vector<const char *> available_strings = {
 			"new_log",
