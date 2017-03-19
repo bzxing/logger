@@ -526,9 +526,6 @@ private:
 		return type;
 	}
 
-	//ReqQueue _req_queue;
-
-	//static Reqs _reqs; // Links to the global request queue
 };
 
 #endif

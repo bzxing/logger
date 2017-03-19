@@ -17,12 +17,13 @@ typedef unsigned short PortType;
 
 namespace Cfg
 {
-	//static const char * hostname = "localhost";
 	static const PortType port = 9876;
 	static const size_t session_buf_size = 4096;
 	static const char * req_delim = "\r\n";
 	static const bool req_trim_trailing_whitespaces = true;
 	static const bool req_filter_out_non_printable_chars = true;
+
+	// Debug flags
 	static const bool req_debug = true;
 	static const bool cli_arg_debug = false;
 	static const bool session_obj_debug = true;
@@ -98,14 +99,15 @@ private:
 				std::getline(is, in_msg);
 
 				// Test raw message
-				/*
-				std::cout << "Read Raw: " << in_msg << std::endl;
-				for (int c : in_msg)
+				if (Cfg::comm_debug_ultra_verbose)
 				{
-					std::cout << c << " ";
+					std::cout << "Read Raw: " << in_msg << std::endl;
+					for (int c : in_msg)
+					{
+						std::cout << c << " ";
+					}
+					std::cout << std::endl;
 				}
-				std::cout << std::endl;
-				*/
 
 				// Trim trailing whitespace
 
@@ -158,8 +160,6 @@ private:
 						std::cout << std::endl;
 					}
 
-					// _in_queue.push_back(std::move(in_msg));
-
 					ReqCommon::ResultCode result_code;
 					auto req_uptr = Reqs::parse_req_str(in_msg, result_code);
 
@@ -209,8 +209,6 @@ private:
 
 	boost::asio::streambuf _in_buf;
 
-	//static const size_t max_length = 1024;
-	//char _data[max_length];
 };
 
 class Server
@@ -251,7 +249,6 @@ public:
 private:
 
 	tcp::acceptor _acceptor;
-	//tcp::socket _socket;
 	boost::asio::io_service & _io_service;
 	const PortType _port;
 };
