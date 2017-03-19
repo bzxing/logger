@@ -160,12 +160,12 @@ private:
 						std::cout << std::endl;
 					}
 
-					ReqCommon::ResultCode result_code;
+					ReqUtils::ResultCode result_code;
 					auto req_uptr = Reqs::parse_req_str(in_msg, result_code);
 
 					if (Cfg::req_debug)
 					{
-						std::cout << "New Req (" << ReqCommon::get_short_result_str(result_code) << "): ";
+						std::cout << "New Req (" << ReqUtils::get_short_result_str(result_code) << "): ";
 						if (req_uptr)
 							std::cout << *req_uptr << std::endl;
 						else
@@ -173,7 +173,7 @@ private:
 					}
 
 					std::ostringstream returned_contents;
-					returned_contents << ReqCommon::get_short_result_str(result_code) << std::endl;
+					returned_contents << ReqUtils::get_short_result_str(result_code) << std::endl;
 					if (req_uptr != nullptr)
 					{
 						req_uptr->serve(GlobalMsgQueue::get_inst(), returned_contents);
