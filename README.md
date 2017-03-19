@@ -5,11 +5,11 @@
 * Highly modular design, polymorphism used when appropraite
 * C++11/14 compliance for thread and memory safety as well as performance (application of the smart pointers, move semantics and RAII-style locks)
 * Persistent database (under construction)
-## Dependencies
-* Linux
-* gcc
-* make
-* boost::asio
+## Platform
+* Ubuntu 16.04 LTS
+* GCC 5.4.0
+* GNU Make 4.0
+* Boost Library 1.58 (Try this command on Ubuntu: `sudo apt-get install libboost-dev`)
 ## Build
 * `git clone https://github.com/xza218/logger.git`
 * `cd logger/server/src`
