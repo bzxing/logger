@@ -9,7 +9,7 @@ DEPDIR=$(BUILDDIR)/dep
 OBJDIR=$(BUILDDIR)/obj
 EXEDIR=$(BUILDDIR)
 
-EXEC=server
+EXEC=server_test
 LIB=server.a
 SOURCES=$(wildcard *.cc)
 DEPS=$(SOURCES:.cc=.d)
