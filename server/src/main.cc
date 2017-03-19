@@ -2,7 +2,7 @@
 #include <iostream>
 #include <exception>
 
-#include "frontend.hh"
+#include "networking.hh"
 
 namespace Cfg
 {
