@@ -1,4 +1,10 @@
 # Logger
+## Highlights
+* High-performance non-blocking network IO (Boost::ASIO)
+* Safe concurrent client access
+* Highly modular design, polymorphism used when appropraite
+* C++11/14 compliance for thread and memory safety as well as performance (application of the smart pointers, move semantics and RAII-style locks)
+* Persistent database (under construction)
 ## Dependencies
 * Linux
 * gcc
