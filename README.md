@@ -14,7 +14,7 @@
 ## Build
 * `git clone https://github.com/xza218/logger.git`
 * `cd logger/server`
-* `make` - this will build both server application and unit tests.
+* `make -j` - this will build both server application and unit tests.
 ## Tutorial
 * Start with pwd at logger root
 * Start server first: `./server/build/bin/server` (the unit test is ./server/build/tests/server_test)
