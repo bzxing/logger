@@ -5,7 +5,7 @@
 * Highly modular, polymorphic request system
 * Highly C++11 and STL "compliant"
 * Smart Make system with auto dependency
-* Persistent database with Boost::Serialization libray (under construction)
+* Persistent database with Boost::Serialization library (under construction)
 * Unit tests done with Boost::Test library, coverage: everything except server-client communication.
 ## Platform
 * Ubuntu 16.04 LTS
