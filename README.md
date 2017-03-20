@@ -1,12 +1,12 @@
 # Logger
 ## Highlights
 * Non-blocking network IO with Boost::ASIO
-* Safe concurrent client access
-* Highly modular, polymorphic design
-* Usage of C++11 mutex, memory and regex libraies as well as STL
-* Persistent database (under construction)
-* Smart Make system for both the application and the unit tests
-* Unit tests done with Boost::Test library
+* Thread-safe logging message queue
+* Highly modular, polymorphic request system
+* Highly C++11 and STL "compliant"
+* Smart Make system with auto dependency
+* Persistent database with Boost::Serialization libray (under construction)
+* Unit tests done with Boost::Test library, so far covering everything but network IO.
 ## Platform
 * Ubuntu 16.04 LTS
 * GCC 5.4.0 (must support gcc-ar)
