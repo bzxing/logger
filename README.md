@@ -6,12 +6,13 @@
 * Highly C++11 and STL "compliant"
 * Smart Make system with auto dependency
 * Persistent database with Boost::Serialization libray (under construction)
-* Unit tests done with Boost::Test library, so far covering everything but network IO.
+* Unit tests done with Boost::Test library, coverage: everything except server-client communication.
 ## Platform
 * Ubuntu 16.04 LTS
 * GCC 5.4.0 (must support gcc-ar)
 * GNU Make 4.0
 * Boost Library 1.58 (Try this command on Ubuntu: `sudo apt-get install libboost-dev`)
+* Python 2.7.12 (for running the client)
 ## Build
 * `git clone https://github.com/xza218/logger.git`
 * `cd logger/server`
