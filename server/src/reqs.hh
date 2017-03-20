@@ -64,9 +64,9 @@ namespace ReqUtils
 				"debug/info/warning/critical/error",
 
 
-			"Illegal request type. Available request types are: new_log, dump_all, delete_all",
+			"Unknown request type. Available request types are: new_log, dump_all, delete_all",
 
-			"Illegal error. Sorry, poor user."
+			"Unknown error. Sorry, poor user."
 		};
 
 		return available_strings[ static_cast<size_t>(result_code) ];
