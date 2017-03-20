@@ -24,11 +24,19 @@ struct ThreadFunc
 	{
 		while (num_msgs > 0)
 		{
+			// Write Test
 			{
 				auto q_lock = GlobalMsgQueue::get_lock();
 				auto & q = GlobalMsgQueue::get_queue();
-				BOOST_TEST_MESSAGE("Thd " << identity.c_str() << " CountDown " << num_msgs << " writing msg");
+				//BOOST_TEST_MESSAGE("Thd " << identity.c_str() << " CountDown " << num_msgs << " writing msg");
 				q.emplace_back(msg, identity, pri);
+			}
+			// Read Test. All msg bodies in the queue shall be identical
+			{
+				auto q_lock = GlobalMsgQueue::get_lock();
+				auto & q = GlobalMsgQueue::get_queue();
+				auto & msg_obj = q.back();
+				BOOST_CHECK(msg_obj.get_msg() == msg);
 			}
 			num_msgs--;
 		}
@@ -39,22 +47,22 @@ BOOST_AUTO_TEST_CASE( concurrency )
 {
 	GlobalMsgQueue::init();
 
-	const size_t num_threads = 32;
-	const size_t msg_per_thd = 1000;
+	const size_t num_threads = 64;
+	const size_t msg_per_thd = 10000;
 
 	std::vector<std::thread> threads(num_threads);
 	const std::string default_msg ("abcdefghijklmnopqrstuvwxyz");
 	const auto default_priority = Msg::Priority::Critical;
 
-	BOOST_TEST_MESSAGE("Firing off " << std::to_string(num_threads).c_str() << " threads");
+	BOOST_TEST_MESSAGE("Message Queue Concurrency Test!");
+	BOOST_TEST_MESSAGE("Firing off " << std::to_string(num_threads).c_str() <<
+		" threads and wait till they finish writing msgs...");
 
 	for (size_t thd_id = 0; thd_id < num_threads; ++thd_id)
 	{
 		threads[thd_id] = std::thread((ThreadFunc()),
 			std::to_string(thd_id), default_msg, default_priority, msg_per_thd);
 	}
-
-	BOOST_TEST_MESSAGE("Waiting for threads to finish");
 
 	// Wait until completion
 	for (std::thread & thd : threads)

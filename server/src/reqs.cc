@@ -96,7 +96,7 @@ public:
 		}
 	}
 
-	virtual void serve(MsgQueueWrapper & q_wrapper, std::ostream &) override
+	virtual MsgQueueWrapper::Lock serve(MsgQueueWrapper & q_wrapper, std::ostream &) override
 	{
 		if (Cfg::req_obj_debug)
 		{
@@ -107,6 +107,8 @@ public:
 
 		auto & q = q_wrapper.get_queue();
 		q.push_back(std::move(_msg));
+
+		return lock;
 	}
 
 	virtual bool operator==(const ReqBase & b_base) const override
@@ -217,7 +219,7 @@ public:
 		os << "[" << req_type_str() << "] [" << Msg::get_priority_str(_pri) << "]";
 	}
 
-	virtual void serve(MsgQueueWrapper & q_wrapper, std::ostream & os) override
+	virtual MsgQueueWrapper::Lock serve(MsgQueueWrapper & q_wrapper, std::ostream & os) override
 	{
 		if (Cfg::req_obj_debug)
 		{
@@ -227,6 +229,8 @@ public:
 		auto lock = q_wrapper.get_lock();
 
 		q_wrapper.dump_to_stream(os, _pri);
+
+		return lock;
 
 	}
 
@@ -337,7 +341,7 @@ public:
 		os << "[" << req_type_str() << "]";
 	}
 
-	virtual void serve(MsgQueueWrapper & q_wrapper, std::ostream &) override
+	virtual MsgQueueWrapper::Lock serve(MsgQueueWrapper & q_wrapper, std::ostream &) override
 	{
 		if (Cfg::req_obj_debug)
 		{
@@ -348,6 +352,8 @@ public:
 
 		auto & q = q_wrapper.get_queue();
 		q.clear();
+
+		return lock;
 	}
 
 	virtual ~ReqDeleteAll() override

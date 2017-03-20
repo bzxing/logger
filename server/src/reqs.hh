@@ -87,7 +87,7 @@ public:
 
 	virtual ~ReqBase() = default;
 
-	virtual void serve(MsgQueueWrapper &, std::ostream &) = 0;
+	virtual MsgQueueWrapper::Lock serve(MsgQueueWrapper &, std::ostream &) = 0;
 
 	friend std::ostream & operator<<(std::ostream & os, const ReqBase & req)
 	{
