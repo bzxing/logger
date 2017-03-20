@@ -1,22 +1,23 @@
 # Logger
 ## Highlights
-* High-performance non-blocking network IO (Boost::ASIO)
+* Non-blocking network IO with Boost::ASIO
 * Safe concurrent client access
-* Highly modular design, polymorphism used when appropraite
-* C++11/14 compliance for thread and memory safety as well as performance (application of the smart pointers, move semantics and RAII-style locks)
+* Highly modular, polymorphic design
+* Usage of C++11 mutex, memory and regex libraies
 * Persistent database (under construction)
+* Smart Make system for both the application and the unit tests.
 ## Platform
 * Ubuntu 16.04 LTS
-* GCC 5.4.0
+* GCC 5.4.0 (must support gcc-ar)
 * GNU Make 4.0
 * Boost Library 1.58 (Try this command on Ubuntu: `sudo apt-get install libboost-dev`)
 ## Build
 * `git clone https://github.com/xza218/logger.git`
-* `cd logger/server/src`
-* `make`
+* `cd logger/server`
+* `make` - this will build both server application and unit tests.
 ## Tutorial
-* Assuming pwd is at logger root
-* Start server first: `./server/build/server`
+* Start with pwd at logger root
+* Start server first: `./server/build/bin/server` (the unit test is ./server/build/tests/server_test)
 * Start client next: `./client/client.py`
 * On client command line interface:
   * First try add a new log: `new_log JohnDoe info hello world I'm here!!!`, and press Enter to send it out, then press Enter AGAIN with an empty command so that the client reads the response from the server.
