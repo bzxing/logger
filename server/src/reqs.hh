@@ -95,6 +95,12 @@ public:
 		return os;
 	}
 
+	virtual bool operator==(const ReqBase &) const = 0;
+
+	bool operator!=(const ReqBase & b) const
+	{
+		return !(*this == b);
+	}
 
 private:
 

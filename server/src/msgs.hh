@@ -67,6 +67,14 @@ public:
 		return _priority;
 	}
 
+	bool operator==(const Msg & b) const
+	{
+		return
+			(this->_priority == b._priority) &&
+			(this->_username == b._username) &&
+			(this->_body == b._body);
+	}
+
 
 	Msg(MsgBody body, Username username, Priority priority)
 	:	_body(body),
@@ -87,6 +95,8 @@ public:
 
 
 private:
+	// N.B. If you modify member elements here, you should also update
+	// the mathematical operators!
 	MsgBody _body;
 	Username _username;
 	Priority _priority;

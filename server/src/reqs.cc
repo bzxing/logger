@@ -2,6 +2,7 @@
 #include "msgs.hh"
 
 #include <regex>
+#include <typeinfo>
 
 namespace Cfg
 {
@@ -107,6 +108,21 @@ public:
 		q.push_back(std::move(_msg));
 	}
 
+	virtual bool operator==(const ReqBase & b_base) const override
+	{
+		// Return false if dynamic types are different
+		if (typeid(*this) != typeid(b_base))
+		{
+			return false;
+		}
+
+		// Same dynamic type. Downcast then do member-wise comparison
+		const ReqNewLog & b = static_cast<const ReqNewLog &>(b_base);
+
+		return (this->_msg == b._msg);
+
+	}
+
 	static std::unique_ptr<ReqNewLog> make_req(const std::string & args, ReqUtils::ResultCode & result_code)
 	{
 		// Command Format
@@ -210,6 +226,21 @@ public:
 		auto lock = q_wrapper.get_lock();
 
 		q_wrapper.dump_to_stream(os, _pri);
+
+	}
+
+	virtual bool operator==(const ReqBase & b_base) const override
+	{
+		// Return false if dynamic types are different
+		if (typeid(*this) != typeid(b_base))
+		{
+			return false;
+		}
+
+		// Same dynamic type. Downcast then do member-wise comparison
+		const ReqDumpAll & b = static_cast<const ReqDumpAll &>(b_base);
+
+		return (this->_pri == b._pri);
 
 	}
 
@@ -324,6 +355,19 @@ public:
 		{
 			std::cout << "ReqDeleteAll::dtor()\n";
 		}
+	}
+
+	virtual bool operator==(const ReqBase & b_base) const override
+	{
+		// Return false if dynamic types are different
+
+		// Keep the syntax this way! For consistency with other subclasses.
+		if (typeid(*this) != typeid(b_base))
+		{
+			return false;
+		}
+
+		return true;
 	}
 
 	static std::unique_ptr<ReqDeleteAll> make_req(ReqUtils::ResultCode & result_code)
