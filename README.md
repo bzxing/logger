@@ -6,6 +6,7 @@
 * Usage of C++11 mutex, memory and regex libraies as well as STL
 * Persistent database (under construction)
 * Smart Make system for both the application and the unit tests
+* Unit tests done with Boost::Test library
 ## Platform
 * Ubuntu 16.04 LTS
 * GCC 5.4.0 (must support gcc-ar)
@@ -30,4 +31,7 @@
   * Try increase the debug level in the dump. Type `dump_all warning` and press Enter twice.
     * You'll see only the more severe message now!
   * Type `delete_all` and press Enter twice, then `dump_all` and press Enter twice, tell me what happened.
-  * Try a wrong command name and press Enter twice. See what happened?
+  * Try a wrong command name and press Enter twice. See what happened? 
+## Unit Testing
+* To build: Run `make -j` in `test` directory. If you've already run `make` in the `server` directory, you can skip this step.
+* From `server` directory, run: `./build/tests/server_test  --log_level=message`
