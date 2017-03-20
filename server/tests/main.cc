@@ -4,10 +4,5 @@
 
 #include "../src/msgs.hh"
 
-bool init_unit_test()
-{
-	srand(time(NULL));
-	GlobalMsgQueue::init();
-	return true;
-}
+
 

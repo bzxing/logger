@@ -77,6 +77,22 @@ public:
 			(this->_body == b._body);
 	}
 
+	// Returning by value for thread safety for now.
+	// TODO: add ref version when needed.
+	Username get_username() const
+	{
+		return _username;
+	}
+
+	Priority get_pri() const
+	{
+		return _priority;
+	}
+
+	MsgBody get_msg() const
+	{
+		return _body;
+	}
 
 	Msg(MsgBody body, Username username, Priority priority)
 	:	_body(body),

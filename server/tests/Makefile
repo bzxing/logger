@@ -21,6 +21,8 @@ MAIN_OBJ=$(OBJDIR)/main.o
 OBJSFP_NOMAIN=$(filter-out $(MAIN_OBJ), $(OBJSFP))
 
 BIN_SRC_DIR=../src
+MAIN_SRC=$(BIN_SRC_DIR)/main.cc
+BIN_SRC_NOMAIN_FP=$(filter-out $(MAIN_SRC), $(wildcard $(BIN_SRC_DIR)/*.cc))
 BIN_BUILD_DIR=../build/bin
 BIN_LIB=$(BIN_BUILD_DIR)/server.a
 
@@ -28,11 +30,11 @@ $(shell mkdir -p $(DEPDIR) > /dev/null)
 $(shell mkdir -p $(OBJDIR) > /dev/null)
 $(shell mkdir -p $(EXEDIR) > /dev/null)
 
-.PHONY: $(BIN_LIB)
+
 $(EXEDIR)/$(EXEC): $(OBJSFP) $(BIN_LIB)
 	$(CC) $^ -o $(EXEDIR)/$(EXEC) $(LDFLAGS)
 
-$(BIN_LIB):
+$(BIN_LIB): $(BIN_SRC_NOMAIN_FP)
 	$(MAKE) -C $(BIN_SRC_DIR) lib
 
 $(DEPDIR)/%.d: %.cc

@@ -21,7 +21,8 @@ BOOST_AUTO_TEST_SUITE( reqs )
 
 BOOST_AUTO_TEST_CASE( good_new_logs )
 {
-	const unsigned num_cases = 100;
+	srand(time(NULL));
+	const unsigned num_cases = 50;
 	for (unsigned i = 0; i < num_cases; ++i)
 	{
 		const std::string req_name = "new_log";
@@ -53,7 +54,8 @@ BOOST_AUTO_TEST_CASE( good_new_logs )
 
 BOOST_AUTO_TEST_CASE( good_dump_all )
 {
-	const unsigned num_cases = 100;
+	srand(time(NULL));
+	const unsigned num_cases = 50;
 	for (unsigned i = 0; i < num_cases; ++i)
 	{
 		const std::string req_name = "dump_all";
