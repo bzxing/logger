@@ -1,5 +1,5 @@
 CC=g++
-CPPFLAGS=-c -Wall -Wextra -O3 -flto -std=c++14
+CPPFLAGS=-c -Wall -Wextra -Werror -O3 -flto -std=c++14
 DEPFLAGS=-M
 LDFLAGS=-lboost_system -lpthread
 

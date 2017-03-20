@@ -21,14 +21,16 @@ public:
 	typedef std::string MsgBody;
 	typedef std::string Username;
 
-	enum class Priority
+	enum class Priority : unsigned
 	{
-		Debug,
+		Min = 0,
+		Debug = Min,
 		Info,
 		Warning,
 		Critical,
 		Error,
-		Illegal
+		Illegal,
+		Max = Illegal
 		// If you update this, don't forget to update the corresponding strings in msgs.cc
 	};
 

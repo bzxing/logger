@@ -4,6 +4,7 @@
 #include <regex>
 #include <typeinfo>
 
+
 namespace Cfg
 {
 	static bool regex_debug = false;
