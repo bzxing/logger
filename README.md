@@ -3,9 +3,9 @@
 * Non-blocking network IO with Boost::ASIO
 * Safe concurrent client access
 * Highly modular, polymorphic design
-* Usage of C++11 mutex, memory and regex libraies
+* Usage of C++11 mutex, memory and regex libraies as well as STL
 * Persistent database (under construction)
-* Smart Make system for both the application and the unit tests.
+* Smart Make system for both the application and the unit tests
 ## Platform
 * Ubuntu 16.04 LTS
 * GCC 5.4.0 (must support gcc-ar)
