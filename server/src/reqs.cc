@@ -158,7 +158,10 @@ public:
 		return new_uptr;
 	}
 
-
+	friend Reqs::ReqBaseUnqPtr ReqsUnitTestsUtils::make_new_log_req(
+		const std::string & body,
+		const std::string & username,
+		const Msg::Priority priority);
 
 private:
 	ReqNewLog(
@@ -266,6 +269,8 @@ public:
 		return new_uptr;
 	}
 
+	friend Reqs::ReqBaseUnqPtr ReqsUnitTestsUtils::make_dump_all_req(const Msg::Priority pri);
+
 
 private:
 	ReqDumpAll(const Msg::Priority pri)
@@ -339,7 +344,7 @@ public:
 		return new_uptr;
 	}
 
-
+	friend Reqs::ReqBaseUnqPtr ReqsUnitTestsUtils::make_delete_all_req();
 
 
 private:
@@ -432,3 +437,25 @@ Reqs::ReqBaseUnqPtr Reqs::parse_req_str(const std::string & req_str, ReqUtils::R
 }
 
 
+namespace ReqsUnitTestsUtils
+{
+
+Reqs::ReqBaseUnqPtr make_new_log_req(
+	const std::string & body,
+	const std::string & username,
+	const Msg::Priority priority)
+{
+	return Reqs::ReqBaseUnqPtr(new ReqNewLog(body, username, priority));
+}
+
+Reqs::ReqBaseUnqPtr make_dump_all_req(const Msg::Priority pri)
+{
+	return Reqs::ReqBaseUnqPtr(new ReqDumpAll(pri));
+}
+
+Reqs::ReqBaseUnqPtr make_delete_all_req()
+{
+	return Reqs::ReqBaseUnqPtr(new ReqDeleteAll);
+}
+
+};

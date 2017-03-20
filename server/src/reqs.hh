@@ -7,6 +7,8 @@
 #include <memory>
 #include <vector>
 
+#include "msgs.hh"
+
 
 class MsgQueueWrapper;
 class GlobalMsgQueue;
@@ -107,6 +109,18 @@ namespace Reqs
 
 };
 
+
+namespace ReqsUnitTestsUtils
+{
+	Reqs::ReqBaseUnqPtr make_new_log_req(
+		const std::string & body,
+		const std::string & username,
+		const Msg::Priority priority);
+
+	Reqs::ReqBaseUnqPtr make_dump_all_req(const Msg::Priority pri);
+
+	Reqs::ReqBaseUnqPtr make_delete_all_req();
+};
 
 
 
