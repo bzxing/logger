@@ -13,6 +13,7 @@
 * GNU Make 4.0
 * Boost Library 1.58 (Try this command on Ubuntu: `sudo apt-get install libboost-dev`)
 * Python 2.7.12 (for running the client)
+* Git (Of course)
 ## Build
 * `git clone https://github.com/xza218/logger.git`
 * `cd logger/server`
