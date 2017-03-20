@@ -33,5 +33,5 @@
   * Type `delete_all` and press Enter twice, then `dump_all` and press Enter twice, tell me what happened.
   * Try a wrong command name and press Enter twice. See what happened? 
 ## Unit Testing
-* To build: Run `make -j` in `test` directory. If you've already run `make` in the `server` directory, you can skip this step.
+* To build: Run `make -j` in `test` directory. If you've already run `make -j` in the `server` directory, you can skip this step.
 * From `server` directory, run: `./build/tests/server_test  --log_level=message`
